@@ -30,8 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files (מכילים סודות אמיתיים — לא להעלות ל-git)
+.env
+.env.local
+.env.*.local
+# .env.example כן נשמר ב-git בכוונה, כתבנית ללא סודות אמיתיים
 
 # vercel
 .vercel
