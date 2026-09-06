@@ -1,4 +1,5 @@
 import { listScheduleSlots } from "@/lib/data/schedule";
+import { SavedBanner, isSaved } from "@/components/admin/saved-banner";
 import { deleteScheduleSlotAction } from "@/app/admin/(protected)/schedule/actions";
 import { LinkButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,11 +8,13 @@ import { ConfirmSubmitButton } from "@/components/ui/confirm-submit-button";
 import { DAY_OF_WEEK_LABELS, SCHOOL_WEEK_DAYS } from "@/lib/constants";
 import { formatTime } from "@/lib/utils";
 
-export default async function AdminSchedulePage() {
+export default async function AdminSchedulePage({ searchParams }: PageProps<"/admin/schedule">) {
+  const params = await searchParams;
   const slots = await listScheduleSlots();
 
   return (
     <div className="flex flex-col gap-6">
+      <SavedBanner show={isSaved(params)} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold text-neutral-900">מערכת שעות</h1>

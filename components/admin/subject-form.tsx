@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import type { SubjectFormState } from "@/app/admin/(protected)/subjects/actions";
 import { FieldWrapper, TextInput, TextArea, CheckboxField } from "@/components/ui/field";
-import { SubmitButton } from "@/components/ui/submit-button";
+import { FormActions } from "@/components/admin/form-actions";
 import { FormError } from "@/components/ui/form-message";
 import type { Subject } from "@/lib/types";
 
@@ -35,7 +35,7 @@ export function SubjectForm({
       <input type="hidden" name="display_order" value={subject?.display_order ?? 0} />
       <CheckboxField id="is_active" name="is_active" defaultChecked={subject?.is_active ?? true} label="מקצוע פעיל (מוצג לתלמידים)" />
       <FormError message={state.error} />
-      <SubmitButton className="self-start">{subject ? "שמירת שינויים" : "יצירת מקצוע"}</SubmitButton>
+      <FormActions isEdit={!!subject} createLabel="יצירת מקצוע" />
     </form>
   );
 }

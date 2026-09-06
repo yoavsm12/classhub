@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import type { ResourceFormState } from "@/app/admin/(protected)/resources/actions";
 import { FieldWrapper, TextInput, TextArea, Select, CheckboxField } from "@/components/ui/field";
-import { SubmitButton } from "@/components/ui/submit-button";
+import { FormActions } from "@/components/admin/form-actions";
 import { FormError } from "@/components/ui/form-message";
 import { RESOURCE_TYPE_OPTIONS, SOURCE_TYPE_OPTIONS, EVENT_TYPE_LABELS } from "@/lib/constants";
 import type { ClassEvent, Resource, Subject } from "@/lib/types";
@@ -119,7 +119,7 @@ export function ResourceForm({
       </div>
 
       <FormError message={state.error} />
-      <SubmitButton className="self-start">{resource ? "שמירת שינויים" : "יצירת חומר"}</SubmitButton>
+      <FormActions isEdit={!!resource} createLabel="יצירת חומר" />
     </form>
   );
 }

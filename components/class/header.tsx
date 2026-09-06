@@ -19,6 +19,9 @@ export function ClassHeader({ settings, access }: { settings: ClassSettings; acc
           <Link href="/class/schedule" className="shrink-0 text-neutral-600 hover:text-neutral-900">
             מערכת שעות
           </Link>
+          <Link href="/class/calendar" className="shrink-0 text-neutral-600 hover:text-neutral-900">
+            לוח שנה
+          </Link>
           <Link href="/class/exams" className="shrink-0 text-neutral-600 hover:text-neutral-900">
             מבחנים
           </Link>

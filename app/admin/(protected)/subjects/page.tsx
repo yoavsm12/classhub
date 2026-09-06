@@ -1,4 +1,5 @@
 import { listSubjects, countSubjectDependents } from "@/lib/data/subjects";
+import { SavedBanner, isSaved } from "@/components/admin/saved-banner";
 import { toggleSubjectActiveAction, deleteSubjectAction, moveSubjectAction } from "@/app/admin/(protected)/subjects/actions";
 import { LinkButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,12 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { ConfirmSubmitButton } from "@/components/ui/confirm-submit-button";
 import { DEFAULT_SUBJECT_ICON } from "@/lib/constants";
 
-export default async function AdminSubjectsPage() {
+export default async function AdminSubjectsPage({ searchParams }: PageProps<"/admin/subjects">) {
+  const params = await searchParams;
   const subjects = await listSubjects();
   const dependents = await Promise.all(subjects.map((s) => countSubjectDependents(s.id)));
 
   return (
     <div className="flex flex-col gap-6">
+      <SavedBanner show={isSaved(params)} />
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-neutral-900">מקצועות</h1>
         <LinkButton href="/admin/subjects/new" size="sm">

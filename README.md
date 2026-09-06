@@ -6,6 +6,10 @@
 
 **זהו MVP.** אין באתר העלאת קבצים — הקבצים עצמם נשארים ב-Google Drive (או כל שירות אחר), והאתר רק מארגן קישורים אליהם.
 
+**חי בפרודקשן:** https://classhub-nine.vercel.app
+
+> למי שממשיך את הפיתוח (כולל כלים אחרים כמו Codex): קראו קודם את **[HANDOFF_TO_CODEX.md](./HANDOFF_TO_CODEX.md)** — מסמך מצב מפורט עם מה עובד, מה לא, החלטות חשובות, ו-TODO מסודר. README זה מתמקד בהתקנה ובשימוש.
+
 ## תוכן עניינים
 
 - [סטאק טכנולוגי](#סטאק-טכנולוגי)
@@ -29,8 +33,8 @@
 
 ## איך זה עובד
 
-- **תלמיד**: נכנס לדף הבית, מזין קוד גישה משותף לכיתה → מקבל session (עוגייה חתומה, ללא חשבון אישי) → רואה מקצועות, חומרים, מבחנים והגשות → פותח קישורים חיצוניים בטאב חדש.
-- **מנהל (המורה)**: מתחבר עם אימייל+סיסמה (Supabase Auth) → מנהל מקצועות, חומרים, אירועים, הודעות ודיווחים דרך `/admin`.
+- **תלמיד**: נכנס לדף הבית, מזין קוד גישה משותף לכיתה → מקבל session (עוגייה חתומה, ללא חשבון אישי) → רואה מקצועות (דף הבית), מערכת שעות, מבחנים ובחנים, משימות והגשות → פותח קישורים חיצוניים בטאב חדש.
+- **מנהל (המורה)**: מתחבר עם אימייל+סיסמה (Supabase Auth) → מנהל מקצועות, חומרים, אירועים (מבחנים/הגשות), מערכת שעות, הודעות ודיווחים דרך `/admin`.
 - **קבצים**: אף קובץ לא מועלה ל-ClassHub. המנהל מעלה קבצים ל-Google Drive (או כל שירות אחר), משתף כ-Viewer, ומדביק את הקישור בטופס "חומר חדש".
 
 ## התקנה מאפס
@@ -58,8 +62,9 @@ npm install
 
 ב-**SQL Editor** של הפרויקט ב-Supabase, הריצו לפי הסדר:
 
-1. את התוכן של `supabase/migrations/0001_init.sql` (יוצר את כל הטבלאות).
-2. (אופציונלי, לדוגמאות) את התוכן של `supabase/seed.sql`.
+1. את התוכן של `supabase/migrations/0001_init.sql` (יוצר את רוב הטבלאות).
+2. את התוכן של `supabase/migrations/0002_schedule.sql` (טבלת מערכת השעות).
+3. (אופציונלי, לדוגמאות גנריות בלבד) את התוכן של `supabase/seed.sql` — ⚠️ זהו seed ישן/גנרי מתחילת הפרויקט, **הוא לא תואם לנתונים האמיתיים שרצים כרגע בפרודקשן**. ראו `HANDOFF_TO_CODEX.md` סעיף 12 לפני שאתם מסתמכים עליו.
 
 אם אתם עובדים עם [Supabase CLI](https://supabase.com/docs/guides/local-development) ופרויקט מקושר, אפשר גם:
 
@@ -121,15 +126,17 @@ npm run dev
 app/
   page.tsx                     # דף כניסה לתלמידים (קוד גישה)
   class/                       # אזור התלמידים (מוגן ב-guest/admin session)
-    page.tsx                   # דף בית: הודעות, אירועים קרובים, מקצועות, חומרים אחרונים
-    search/                    # חיפוש חומר בכל הכיתה
-    subjects/[slug]/           # עמוד מקצוע עם חיפוש ופילטרים
-    events/                    # מבחנים והגשות
+    page.tsx                   # דף בית — מציג רק את רשימת המקצועות
+    subjects/[slug]/           # עמוד מקצוע עם חיפוש ופילטרים (⚠️ decodeURIComponent על slug, ראו HANDOFF)
+    schedule/                  # מערכת שעות שבועית (ציר זמן חי + בחירת קבוצה)
+    exams/                     # מבחנים ובחנים
+    assignments/                # משימות והגשות
+    search/                    # חיפוש חומר בכל הכיתה (קיים, כרגע לא מקושר מהניווט)
   admin/
     login/                     # התחברות מנהל (Supabase Auth)
     (protected)/                # כל השאר — מוגן ע"י requireAdmin()
       page.tsx                 # לוח בקרה
-      subjects/ resources/ events/ announcements/ reports/ settings/
+      subjects/ resources/ events/ schedule/ announcements/ reports/ settings/
   actions/                     # Server Actions ציבוריים (guest login/logout, דיווחים)
 
 lib/
@@ -137,13 +144,17 @@ lib/
   data/                        # שכבת גישה לנתונים (Data Access Layer) — קורא ל-Supabase בלבד
   supabase/                    # לקוחות Supabase (browser / server-auth / service)
   validation/                  # סכמות Zod לכל טופס
+  time-grid.ts                 # חישובי ציר-זמן למערכת השעות
   types.ts constants.ts utils.ts env.ts
 
 proxy.ts                       # הגנת נתיבים ברמת Next.js (Next 16: proxy.ts, לא middleware.ts)
 supabase/
-  migrations/0001_init.sql     # סכמת מסד הנתונים המלאה
-  seed.sql                     # נתוני דוגמה
-scripts/generate-access-code-hash.ts
+  migrations/0001_init.sql     # סכמת מסד הנתונים המרכזית
+  migrations/0002_schedule.sql # טבלת מערכת השעות
+  seed.sql                     # ⚠️ נתוני דוגמה ישנים, לא תואם לפרודקשן — ראו HANDOFF_TO_CODEX.md
+scripts/
+  generate-access-code-hash.ts
+  run-sql.ts                  # הרצת SQL מול production בלי psql — ראו סעיף למטה
 ```
 
 ## מודל הרשאות ואבטחה

@@ -9,16 +9,29 @@ export function SubmitButton({
   variant,
   size,
   className,
+  name,
+  value,
 }: {
   children: React.ReactNode;
   pendingLabel?: string;
   variant?: "primary" | "secondary" | "ghost" | "danger";
   size?: "md" | "sm";
   className?: string;
+  /** מאפשר להבחין בין כמה כפתורי submit באותו טופס (נשלח ב-FormData). */
+  name?: string;
+  value?: string;
 }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} variant={variant} size={size} className={className}>
+    <Button
+      type="submit"
+      disabled={pending}
+      variant={variant}
+      size={size}
+      className={className}
+      name={name}
+      value={value}
+    >
       {pending ? pendingLabel : children}
     </Button>
   );

@@ -10,6 +10,7 @@ const links = [
   { href: "/admin/schedule", label: "מערכת שעות" },
   { href: "/admin/resources", label: "חומרים" },
   { href: "/admin/events", label: "מבחנים והגשות" },
+  { href: "/admin/holidays", label: "חופשות" },
   { href: "/admin/announcements", label: "הודעות" },
   { href: "/admin/reports", label: "דיווחים" },
   { href: "/admin/settings", label: "הגדרות" },

@@ -67,6 +67,35 @@ export function formatTime(value: string): string {
   return value.slice(0, 5);
 }
 
+/**
+ * תחילת "היום" (00:00) לפי אזור זמן נתון, כ-Date אמיתי (מבטא רגע UTC נכון,
+ * כולל טיפול נכון בשעון קיץ/חורף). ברירת מחדל: שעון ישראל, כי ל-ClassHub
+ * יש כיתה אחת פיזית אחת — "היום" תמיד אמור להיות לפי הזמן המקומי שלה,
+ * לא לפי אזור הזמן של שרת הריצה (Vercel רץ ב-UTC).
+ */
+export function startOfTodayInTimeZone(timeZone = "Asia/Jerusalem"): Date {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(now);
+
+  const get = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+
+  // "עכשיו" כפי שהוא נראה בשעון המקומי, מפורש כאילו היה UTC — ההפרש מ-now האמיתי הוא ה-offset הנוכחי.
+  const localNowAsUtc = Date.UTC(get("year"), get("month") - 1, get("day"), get("hour"), get("minute"), get("second"));
+  const offsetMs = localNowAsUtc - now.getTime();
+
+  const startOfLocalDayAsUtc = Date.UTC(get("year"), get("month") - 1, get("day"), 0, 0, 0);
+  return new Date(startOfLocalDayAsUtc - offsetMs);
+}
+
 export function relativeDayLabel(dateStr: string): string {
   const diff = daysUntil(dateStr);
   if (diff === 0) return "היום";

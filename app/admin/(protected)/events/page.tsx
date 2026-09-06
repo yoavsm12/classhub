@@ -1,4 +1,5 @@
 import { listEventsWithSubject } from "@/lib/data/events";
+import { SavedBanner, isSaved } from "@/components/admin/saved-banner";
 import { deleteEventAction } from "@/app/admin/(protected)/events/actions";
 import { LinkButton } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,11 +8,13 @@ import { ConfirmSubmitButton } from "@/components/ui/confirm-submit-button";
 import { EVENT_TYPE_LABELS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 
-export default async function AdminEventsPage() {
+export default async function AdminEventsPage({ searchParams }: PageProps<"/admin/events">) {
+  const params = await searchParams;
   const events = await listEventsWithSubject();
 
   return (
     <div className="flex flex-col gap-6">
+      <SavedBanner show={isSaved(params)} />
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-neutral-900">מבחנים והגשות</h1>
         <LinkButton href="/admin/events/new" size="sm">

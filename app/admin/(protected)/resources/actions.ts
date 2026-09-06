@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
+import { savedRedirectPath } from "@/lib/admin-redirect";
 import { resourceSchema } from "@/lib/validation/resource";
 import { createResource, deleteResource, setResourceActive, updateResource } from "@/lib/data/resources";
 
@@ -40,7 +41,7 @@ export async function createResourceAction(
   await createResource(parsed.data);
   revalidatePath("/admin/resources");
   revalidatePath("/class");
-  redirect("/admin/resources");
+  redirect(savedRedirectPath(formData, "/admin/resources"));
 }
 
 export async function updateResourceAction(
@@ -58,7 +59,7 @@ export async function updateResourceAction(
   await updateResource(id, parsed.data);
   revalidatePath("/admin/resources");
   revalidatePath("/class");
-  redirect("/admin/resources");
+  redirect("/admin/resources?saved=1");
 }
 
 export async function toggleResourceActiveAction(formData: FormData): Promise<void> {

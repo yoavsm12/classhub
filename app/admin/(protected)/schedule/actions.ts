@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
+import { savedRedirectPath } from "@/lib/admin-redirect";
 import { scheduleSlotSchema } from "@/lib/validation/schedule";
 import { createScheduleSlot, deleteScheduleSlot, updateScheduleSlot } from "@/lib/data/schedule";
 
@@ -36,7 +37,7 @@ export async function createScheduleSlotAction(
   await createScheduleSlot(parsed.data);
   revalidatePath("/admin/schedule");
   revalidatePath("/class/schedule");
-  redirect("/admin/schedule");
+  redirect(savedRedirectPath(formData, "/admin/schedule"));
 }
 
 export async function updateScheduleSlotAction(
@@ -54,7 +55,7 @@ export async function updateScheduleSlotAction(
   await updateScheduleSlot(id, parsed.data);
   revalidatePath("/admin/schedule");
   revalidatePath("/class/schedule");
-  redirect("/admin/schedule");
+  redirect("/admin/schedule?saved=1");
 }
 
 export async function deleteScheduleSlotAction(formData: FormData): Promise<void> {

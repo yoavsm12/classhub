@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
+import { savedRedirectPath } from "@/lib/admin-redirect";
 import { eventSchema } from "@/lib/validation/event";
 import { createEvent, deleteEvent, updateEvent } from "@/lib/data/events";
 
@@ -34,7 +35,7 @@ export async function createEventAction(_prevState: EventFormState, formData: Fo
   await createEvent(parsed.data);
   revalidatePath("/admin/events");
   revalidatePath("/class");
-  redirect("/admin/events");
+  redirect(savedRedirectPath(formData, "/admin/events"));
 }
 
 export async function updateEventAction(
@@ -52,7 +53,7 @@ export async function updateEventAction(
   await updateEvent(id, parsed.data);
   revalidatePath("/admin/events");
   revalidatePath("/class");
-  redirect("/admin/events");
+  redirect("/admin/events?saved=1");
 }
 
 export async function deleteEventAction(formData: FormData): Promise<void> {

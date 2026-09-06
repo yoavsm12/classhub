@@ -10,6 +10,7 @@ import {
   GUEST_SESSION_COOKIE,
   GUEST_SESSION_MAX_AGE_SECONDS,
 } from "@/lib/auth/guest-session";
+import { logGuestEntry } from "@/lib/data/access-log";
 
 export interface GuestLoginState {
   error?: string;
@@ -26,6 +27,8 @@ export async function guestLoginAction(_prevState: GuestLoginState, formData: Fo
   if (!isValid) {
     return { error: "קוד הגישה שגוי. בדקו את הקוד ונסו שוב." };
   }
+
+  await logGuestEntry();
 
   const token = await createGuestSessionToken();
   const cookieStore = await cookies();

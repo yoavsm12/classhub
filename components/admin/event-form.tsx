@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import type { EventFormState } from "@/app/admin/(protected)/events/actions";
 import { FieldWrapper, TextInput, TextArea, Select, CheckboxField } from "@/components/ui/field";
-import { SubmitButton } from "@/components/ui/submit-button";
+import { FormActions } from "@/components/admin/form-actions";
 import { FormError } from "@/components/ui/form-message";
 import { EVENT_TYPE_OPTIONS } from "@/lib/constants";
 import type { ClassEvent, Resource, Subject } from "@/lib/types";
@@ -89,7 +89,7 @@ export function EventForm({
       <CheckboxField id="is_important" name="is_important" defaultChecked={event?.is_important} label="סמן כחשוב ⭐" />
 
       <FormError message={state.error} />
-      <SubmitButton className="self-start">{event ? "שמירת שינויים" : "יצירת אירוע"}</SubmitButton>
+      <FormActions isEdit={!!event} createLabel="יצירת אירוע" />
     </form>
   );
 }

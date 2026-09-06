@@ -1,4 +1,5 @@
 import { listAnnouncements } from "@/lib/data/announcements";
+import { SavedBanner, isSaved } from "@/components/admin/saved-banner";
 import {
   deleteAnnouncementAction,
   toggleAnnouncementActiveAction,
@@ -10,11 +11,13 @@ import { Badge } from "@/components/ui/badge";
 import { ConfirmSubmitButton } from "@/components/ui/confirm-submit-button";
 import { formatDateTime } from "@/lib/utils";
 
-export default async function AdminAnnouncementsPage() {
+export default async function AdminAnnouncementsPage({ searchParams }: PageProps<"/admin/announcements">) {
+  const params = await searchParams;
   const announcements = await listAnnouncements();
 
   return (
     <div className="flex flex-col gap-6">
+      <SavedBanner show={isSaved(params)} />
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-neutral-900">הודעות</h1>
         <LinkButton href="/admin/announcements/new" size="sm">

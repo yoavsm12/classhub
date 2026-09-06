@@ -66,3 +66,22 @@ export const DAY_OF_WEEK_OPTIONS = DAY_OF_WEEK_LABELS.map((label, value) => ({ v
 
 /** ימי הלימוד הרלוונטיים לתצוגת ברירת המחדל (א'-ו', בלי שבת). */
 export const SCHOOL_WEEK_DAYS = [0, 1, 2, 3, 4, 5] as const;
+
+/** טווח לוח השנה של שנת הלימודים — מ-1 בספטמבר 2026 עד סוף אוגוסט 2027 (כולל ט׳ באב). */
+export const CALENDAR_START_MONTH = { year: 2026, month: 9 }; // ספטמבר 2026 (month: 1-12)
+export const CALENDAR_END_MONTH = { year: 2027, month: 8 }; // אוגוסט 2027
+
+export const MONTH_NAMES_HE = [
+  "ינואר",
+  "פברואר",
+  "מרץ",
+  "אפריל",
+  "מאי",
+  "יוני",
+  "יולי",
+  "אוגוסט",
+  "ספטמבר",
+  "אוקטובר",
+  "נובמבר",
+  "דצמבר",
+] as const;

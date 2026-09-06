@@ -1,4 +1,5 @@
 import { listResources } from "@/lib/data/resources";
+import { SavedBanner, isSaved } from "@/components/admin/saved-banner";
 import { listSubjects } from "@/lib/data/subjects";
 import { toggleResourceActiveAction, deleteResourceAction } from "@/app/admin/(protected)/resources/actions";
 import { LinkButton } from "@/components/ui/button";
@@ -32,6 +33,7 @@ export default async function AdminResourcesPage({ searchParams }: PageProps<"/a
 
   return (
     <div className="flex flex-col gap-6">
+      <SavedBanner show={isSaved(query)} />
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-neutral-900">חומרים</h1>
         <LinkButton href="/admin/resources/new" size="sm">

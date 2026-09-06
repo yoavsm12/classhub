@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import type { AnnouncementFormState } from "@/app/admin/(protected)/announcements/actions";
 import { FieldWrapper, TextInput, TextArea, CheckboxField } from "@/components/ui/field";
-import { SubmitButton } from "@/components/ui/submit-button";
+import { FormActions } from "@/components/admin/form-actions";
 import { FormError } from "@/components/ui/form-message";
 import type { Announcement } from "@/lib/types";
 
@@ -36,7 +36,7 @@ export function AnnouncementForm({
         />
       </div>
       <FormError message={state.error} />
-      <SubmitButton className="self-start">{announcement ? "שמירת שינויים" : "פרסום הודעה"}</SubmitButton>
+      <FormActions isEdit={!!announcement} createLabel="פרסום הודעה" />
     </form>
   );
 }

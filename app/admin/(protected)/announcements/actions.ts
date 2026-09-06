@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
+import { savedRedirectPath } from "@/lib/admin-redirect";
 import { announcementSchema } from "@/lib/validation/announcement";
 import {
   createAnnouncement,
@@ -39,7 +40,7 @@ export async function createAnnouncementAction(
   await createAnnouncement(parsed.data);
   revalidatePath("/admin/announcements");
   revalidatePath("/class");
-  redirect("/admin/announcements");
+  redirect(savedRedirectPath(formData, "/admin/announcements"));
 }
 
 export async function updateAnnouncementAction(
@@ -57,7 +58,7 @@ export async function updateAnnouncementAction(
   await updateAnnouncement(id, parsed.data);
   revalidatePath("/admin/announcements");
   revalidatePath("/class");
-  redirect("/admin/announcements");
+  redirect("/admin/announcements?saved=1");
 }
 
 export async function togglePinnedAction(formData: FormData): Promise<void> {

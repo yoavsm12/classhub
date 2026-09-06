@@ -3,21 +3,32 @@ import { listSubjects } from "@/lib/data/subjects";
 import { countActiveResources, listRecentResources } from "@/lib/data/resources";
 import { countUpcomingEvents, listUpcomingEvents } from "@/lib/data/events";
 import { countOpenReports, listReports } from "@/lib/data/reports";
+import { countTodayEntries } from "@/lib/data/access-log";
+import { getTodayEntryCountAction } from "@/app/admin/(protected)/actions";
 import { Card } from "@/components/ui/card";
-import { LinkButton } from "@/components/ui/button";
+import { LiveEntryCounter } from "@/components/admin/live-entry-counter";
 import { formatDateTime, formatDate } from "@/lib/utils";
 
 export default async function AdminDashboardPage() {
-  const [subjects, activeResourceCount, upcomingEventCount, openReportCount, recentResources, upcomingEvents, openReports] =
-    await Promise.all([
-      listSubjects({ onlyActive: true }),
-      countActiveResources(),
-      countUpcomingEvents(),
-      countOpenReports(),
-      listRecentResources(5),
-      listUpcomingEvents(5),
-      listReports("open"),
-    ]);
+  const [
+    subjects,
+    activeResourceCount,
+    upcomingEventCount,
+    openReportCount,
+    todayEntryCount,
+    recentResources,
+    upcomingEvents,
+    openReports,
+  ] = await Promise.all([
+    listSubjects({ onlyActive: true }),
+    countActiveResources(),
+    countUpcomingEvents(),
+    countOpenReports(),
+    countTodayEntries(),
+    listRecentResources(5),
+    listUpcomingEvents(5),
+    listReports("open"),
+  ]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -25,6 +36,8 @@ export default async function AdminDashboardPage() {
         <h1 className="text-xl font-bold text-neutral-900">לוח בקרה</h1>
         <p className="text-sm text-neutral-500">סקירה כללית של הכיתה.</p>
       </div>
+
+      <LiveEntryCounter initialCount={todayEntryCount} action={getTodayEntryCountAction} />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatCard label="מקצועות פעילים" value={subjects.length} />
@@ -34,24 +47,18 @@ export default async function AdminDashboardPage() {
       </div>
 
       <section className="flex flex-col gap-3">
-        <h2 className="font-bold text-neutral-900">פעולות מהירות</h2>
-        <div className="flex flex-wrap gap-2">
-          <LinkButton href="/admin/subjects/new" variant="secondary" size="sm">
-            + מקצוע חדש
-          </LinkButton>
-          <LinkButton href="/admin/schedule/new" variant="secondary" size="sm">
-            + שיעור למערכת שעות
-          </LinkButton>
-          <LinkButton href="/admin/resources/new" variant="secondary" size="sm">
-            + חומר חדש
-          </LinkButton>
-          <LinkButton href="/admin/events/new" variant="secondary" size="sm">
-            + מבחן / הגשה
-          </LinkButton>
-          <LinkButton href="/admin/announcements/new" variant="secondary" size="sm">
-            + הודעה חדשה
-          </LinkButton>
+        <h2 className="font-bold text-neutral-900">הוספה מהירה</h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <QuickAdd href="/admin/resources/new" icon="📄" label="חומר לימוד" hint="סיכום, מצגת, דף תרגול" />
+          <QuickAdd href="/admin/events/new" icon="📝" label="מבחן / הגשה" hint="עם תאריך ונושאים" />
+          <QuickAdd href="/admin/holidays/new" icon="🏖️" label="חופשה / חג" hint="טווח תאריכים בלוח" />
+          <QuickAdd href="/admin/schedule/new" icon="🕘" label="שיעור במערכת" hint="יום, שעה, מרצה, חדר" />
+          <QuickAdd href="/admin/announcements/new" icon="📣" label="הודעה" hint="הודעה לכיתה" />
+          <QuickAdd href="/admin/subjects/new" icon="📚" label="מקצוע" hint="מקצוע לימוד חדש" />
         </div>
+        <p className="text-xs text-neutral-400">
+          טיפ: בכל טופס יש כפתור <strong>&quot;שמור והוסף עוד&quot;</strong> — נוח להזנה של הרבה פריטים ברצף.
+        </p>
       </section>
 
       <section className="grid gap-6 sm:grid-cols-2">
@@ -121,6 +128,19 @@ export default async function AdminDashboardPage() {
         </Card>
       </section>
     </div>
+  );
+}
+
+function QuickAdd({ href, icon, label, hint }: { href: string; icon: string; label: string; hint: string }) {
+  return (
+    <Link
+      href={href}
+      className="flex flex-col gap-1 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-neutral-900 hover:shadow-md"
+    >
+      <span className="text-2xl">{icon}</span>
+      <span className="font-semibold text-neutral-900">+ {label}</span>
+      <span className="text-xs text-neutral-400">{hint}</span>
+    </Link>
   );
 }
 

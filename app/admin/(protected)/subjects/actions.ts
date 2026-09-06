@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
+import { savedRedirectPath } from "@/lib/admin-redirect";
 import { subjectSchema } from "@/lib/validation/subject";
 import { slugify } from "@/lib/utils";
 import {
@@ -48,7 +49,7 @@ export async function createSubjectAction(_prevState: SubjectFormState, formData
   await createSubject(parsed.data);
   revalidatePath("/admin/subjects");
   revalidatePath("/class");
-  redirect("/admin/subjects");
+  redirect(savedRedirectPath(formData, "/admin/subjects"));
 }
 
 export async function updateSubjectAction(
@@ -70,7 +71,7 @@ export async function updateSubjectAction(
   await updateSubject(id, parsed.data);
   revalidatePath("/admin/subjects");
   revalidatePath("/class");
-  redirect("/admin/subjects");
+  redirect("/admin/subjects?saved=1");
 }
 
 export async function toggleSubjectActiveAction(formData: FormData): Promise<void> {

@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import type { ScheduleFormState } from "@/app/admin/(protected)/schedule/actions";
 import { FieldWrapper, TextInput, Select } from "@/components/ui/field";
-import { SubmitButton } from "@/components/ui/submit-button";
+import { FormActions } from "@/components/admin/form-actions";
 import { FormError } from "@/components/ui/form-message";
 import { DAY_OF_WEEK_OPTIONS } from "@/lib/constants";
 import { formatTime } from "@/lib/utils";
@@ -86,7 +86,7 @@ export function ScheduleForm({
       </FieldWrapper>
 
       <FormError message={state.error} />
-      <SubmitButton className="self-start">{slot ? "שמירת שינויים" : "הוספת שיעור"}</SubmitButton>
+      <FormActions isEdit={!!slot} createLabel="הוספת שיעור" />
     </form>
   );
 }

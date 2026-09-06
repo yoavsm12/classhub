@@ -136,3 +136,13 @@ export interface ScheduleSlot {
 export interface ScheduleSlotWithSubject extends ScheduleSlot {
   subject: Pick<Subject, "id" | "name" | "slug" | "icon">;
 }
+
+export interface Holiday {
+  id: string;
+  title: string;
+  start_date: string;
+  end_date: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+}
